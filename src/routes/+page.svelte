@@ -5,11 +5,22 @@
 	import FinalFour from '$lib/components/FinalFour.svelte';
 	import Connectors from '$lib/components/Connectors.svelte';
 
+	const MOBILE_LABELS = ['North', 'East', 'South', 'West', 'Finals'];
+
 	let pin = $state('');
 	let submitError = $state('');
 	let busy = $state(false);
+	let mobile = $state(false);
+	let active = $state(0);
 
-	onMount(() => bracket.load());
+	onMount(() => {
+		bracket.load();
+		const mq = matchMedia('(max-width: 900px)');
+		mobile = mq.matches;
+		const onChange = (e: MediaQueryListEvent) => (mobile = e.matches);
+		mq.addEventListener('change', onChange);
+		return () => mq.removeEventListener('change', onChange);
+	});
 
 	async function submit() {
 		submitError = '';
@@ -73,12 +84,18 @@
 		<p class="pin-hint">New username? Pick a 4–6 digit PIN. Returning? Same PIN updates your bracket.</p>
 	</section>
 
+	<div class="mobile-nav">
+		<button onclick={() => (active = (active + 4) % 5)} aria-label="Previous bracket">←</button>
+		<span class="mobile-label">{MOBILE_LABELS[active]}</span>
+		<button onclick={() => (active = (active + 1) % 5)} aria-label="Next bracket">→</button>
+	</div>
+
 	<main class="board" id="board">
 		<Connectors />
-		<Region r={0} dir="right" />
-		<FinalFour />
-		<Region r={1} dir="left" />
-		<Region r={2} dir="right" />
-		<Region r={3} dir="left" />
+		<Region r={0} dir="right" hide={mobile && active !== 0} />
+		<FinalFour hide={mobile && active !== 4} />
+		<Region r={1} dir="left" hide={mobile && active !== 1} />
+		<Region r={2} dir="right" hide={mobile && active !== 2} />
+		<Region r={3} dir="left" hide={mobile && active !== 3} />
 	</main>
 </div>

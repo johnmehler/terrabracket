@@ -2,11 +2,11 @@
 	import { bracket, REGION_NAMES, type Player } from '$lib/bracket.svelte';
 	import Sortable from './Sortable.svelte';
 
-	let { r, dir }: { r: number; dir: 'left' | 'right' } = $props();
+	let { r, dir, hide = false }: { r: number; dir: 'left' | 'right'; hide?: boolean } = $props();
 	const arrow = $derived(dir === 'left' ? '←' : '→');
 </script>
 
-<section class="region region-{r}">
+<section class="region region-{r}" class:hide>
 	<h2>{REGION_NAMES[r]}</h2>
 	<Sortable
 		items={bracket.regions[r]}

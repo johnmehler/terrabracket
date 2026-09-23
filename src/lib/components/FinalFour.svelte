@@ -1,9 +1,11 @@
 <script lang="ts">
 	import { bracket, REGION_NAMES } from '$lib/bracket.svelte';
 	import Sortable from './Sortable.svelte';
+
+	let { hide = false }: { hide?: boolean } = $props();
 </script>
 
-<section class="center">
+<section class="center" class:hide>
 	<h2>Finals</h2>
 	<p class="hint">Semifinal winners — drag to rank them</p>
 	<Sortable items={bracket.center} onreorder={(from, to) => bracket.reorderCenter(from, to)}>

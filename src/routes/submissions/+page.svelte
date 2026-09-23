@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { bracket, REGION_NAMES, type Submission } from '$lib/bracket.svelte';
+	import { bracket, type Submission } from '$lib/bracket.svelte';
 	import { supabase } from '$lib/supabase';
+	import MiniBracket from '$lib/components/MiniBracket.svelte';
 
 	let subs = $state<Submission[]>([]);
 
@@ -30,11 +31,8 @@
 	});
 
 	function champion(s: Submission): string {
-		return s.regions[s.center[0]]?.[0]?.name ?? '?';
-	}
-
-	function finalist(s: Submission, i: number): string {
-		return s.regions[s.center[i]]?.[0]?.name ?? '?';
+		const p = s.regions[s.center[0]]?.[0];
+		return p ? (typeof p === 'string' ? p : p.name) : '?';
 	}
 </script>
 
@@ -65,26 +63,7 @@
 							<span class="ts">{new Date(s.ts).toLocaleString()}</span>
 						</div>
 						<p class="champ-pick">Champion: <strong>{champion(s)}</strong></p>
-						<details>
-							<summary>Full bracket</summary>
-							<div class="detail">
-								<p class="detail-label">Finals ranking</p>
-								<ol>
-									{#each [0, 1, 2, 3] as i}
-										<li>{finalist(s, i)} <span class="src">({REGION_NAMES[s.center[i]]})</span></li>
-									{/each}
-								</ol>
-								<p class="detail-label">Semifinals</p>
-								<ul>
-									{#each s.regions as r, i}
-										<li>
-											<span class="src">{REGION_NAMES[i]}:</span>
-											{r.map((p) => p.name).join(', ')}
-										</li>
-									{/each}
-								</ul>
-							</div>
-						</details>
+						<MiniBracket regions={s.regions} center={s.center} />
 					</article>
 				{/each}
 			</div>

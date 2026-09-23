@@ -1,5 +1,5 @@
 import { browser } from '$app/environment';
-import { supabase } from './supabase';
+import { supabase, supabaseConfigured } from './supabase';
 
 const STORAGE_KEY = 'terrabracket-v4';
 const SUBMISSIONS_KEY = 'terrabracket-submissions';
@@ -85,6 +85,7 @@ class Bracket {
 		const username = this.username.trim();
 		if (!username) return 'Enter your BGA username';
 		if (!/^\d{4,6}$/.test(pin)) return 'PIN must be 4–6 digits';
+		if (!supabaseConfigured) return 'Supabase is not configured (missing anon key)';
 		this.username = username;
 
 		const payload = JSON.stringify({
@@ -99,7 +100,7 @@ class Bracket {
 				.select('id, pin')
 				.ilike('username', username)
 				.maybeSingle();
-			if (selErr) return 'Could not reach the server — try again';
+			if (selErr) return `Server error: ${selErr.message}`;
 
 			if (existing) {
 				if (existing.pin !== pinHash) return 'Incorrect PIN for that username';
@@ -114,8 +115,8 @@ class Bracket {
 					.insert({ username, pin: pinHash, data: payload });
 				if (error) return error.message;
 			}
-		} catch {
-			return 'Could not reach the server — try again';
+		} catch (e) {
+			return `Could not reach the server — ${e instanceof Error ? e.message : 'try again'}`;
 		}
 
 		this.submittedAt = Date.now();

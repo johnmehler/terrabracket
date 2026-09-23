@@ -325,8 +325,7 @@ nav {
 	gap: 0.5rem;
 }
 
-nav a,
-.navbtn {
+nav a {
 	color: #2a3f9e;
 	font-size: 0.85rem;
 	font-weight: 700;
@@ -335,13 +334,6 @@ nav a,
 	border-radius: 8px;
 	padding: 0.4rem 0.8rem;
 	background: #fdf9ec;
-	cursor: pointer;
-	font-family: inherit;
-}
-
-.who {
-	font-size: 0.8rem;
-	color: #8a7f5f;
 }
 
 /* ---------- submissions page ---------- */
@@ -400,36 +392,78 @@ nav a,
 	font-size: 0.85rem;
 }
 
-.sub-card summary {
-	font-size: 0.78rem;
-	color: #2a3f9e;
-	cursor: pointer;
-}
+/* ---------- mini bracket ---------- */
 
-.detail {
+.mini-board {
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	gap: 0.4rem;
+	align-items: center;
 	margin-top: 0.4rem;
-	font-size: 0.8rem;
 }
 
-.detail-label {
-	margin: 0.5rem 0 0.2rem;
-	font-size: 0.68rem;
-	text-transform: uppercase;
-	letter-spacing: 0.08em;
-	color: #8a7f5f;
+.mini-col {
+	display: flex;
+	flex-direction: column;
+	gap: 0.4rem;
 }
 
-.detail ol,
-.detail ul {
-	margin: 0;
-	padding-left: 1.3rem;
+.mini-bracket {
+	border: 1px solid #d8cba4;
+	border-radius: 6px;
+	overflow: hidden;
+	background: #fbf6e7;
 }
 
-.detail li {
-	padding: 0.1rem 0;
+.mini-row {
+	font-size: 0.6rem;
+	padding: 0.15rem 0.35rem;
+	border-bottom: 1px solid #eee3c8;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	color: #4a4a68;
+}
+
+.mini-row:last-child {
+	border-bottom: none;
+}
+
+.mini-row.top {
+	background: #f5e9c5;
+	font-weight: 700;
+	color: #232a55;
+}
+
+.mini-center {
+	align-self: center;
+	border-color: #9aa8d8;
+}
+
+.mini-center .mini-row:first-child {
+	background: #f8e3ac;
+	font-weight: 700;
+	color: #232a55;
+}
+
+.mb-0 {
+	border-top: 2px solid #e8481f;
+}
+.mb-1 {
+	border-top: 2px solid #2a6fe0;
+}
+.mb-2 {
+	border-top: 2px solid #3e8e52;
+}
+.mb-3 {
+	border-top: 2px solid #6fb7e8;
 }
 
 /* ---------- small screens ---------- */
+
+.mobile-nav {
+	display: none;
+}
 
 @media (max-width: 900px) {
 	.board {
@@ -445,12 +479,49 @@ nav a,
 		justify-self: center;
 	}
 
+	.region,
+	.center {
+		width: min(400px, 100%);
+	}
+
 	.center {
 		grid-column: 1;
 		grid-row: auto;
 	}
 
+	.hide {
+		display: none;
+	}
+
 	.wires {
 		display: none;
+	}
+
+	.mobile-nav {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 1rem;
+	}
+
+	.mobile-nav button {
+		background: #2a3f9e;
+		border: none;
+		border-radius: 8px;
+		color: #fdf9ec;
+		font-size: 1.1rem;
+		font-weight: 700;
+		width: 2.6rem;
+		height: 2.2rem;
+		cursor: pointer;
+		font-family: inherit;
+	}
+
+	.mobile-label {
+		min-width: 6rem;
+		text-align: center;
+		font-weight: 700;
+		font-size: 0.9rem;
+		color: #3d4c8f;
 	}
 }
