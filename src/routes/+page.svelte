@@ -40,7 +40,7 @@
 		<img class="logo" src="/logo.png" alt="Terra Mystica Pick'em" />
 		<h1 class="sr-only">Terra Mystica Pick'em</h1>
 		<p class="sub">Drag to sort each bracket — #1 in every semifinal advances to the Finals.</p>
-		<nav>
+		<nav class="main-nav">
 			<a href="/submissions">Submissions</a>
 		</nav>
 	</header>

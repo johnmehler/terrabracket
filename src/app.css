@@ -452,7 +452,7 @@ nav a {
 }
 
 @media (max-width: 900px) {
-	header nav {
+	.main-nav {
 		display: none;
 	}
 
