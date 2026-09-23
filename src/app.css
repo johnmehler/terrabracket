@@ -184,21 +184,6 @@ h2 {
 	opacity: 0.35;
 }
 
-.rank {
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	width: 1.4rem;
-	height: 1.4rem;
-	border-radius: 50%;
-	background: #ffffff;
-	border: 1px solid #2a3f9e;
-	font-size: 0.72rem;
-	font-weight: 700;
-	color: #2a3f9e;
-	flex-shrink: 0;
-}
-
 .name {
 	flex: 1;
 	overflow: hidden;
