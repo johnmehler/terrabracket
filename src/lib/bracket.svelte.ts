@@ -1,5 +1,4 @@
 import { browser } from '$app/environment';
-import { auth } from './auth.svelte';
 import { supabase } from './supabase';
 
 const STORAGE_KEY = 'terrabracket-v4';
@@ -54,6 +53,11 @@ function move<T>(arr: T[], from: number, to: number): T[] {
 	return next;
 }
 
+async function sha256(text: string): Promise<string> {
+	const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+	return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
+}
+
 class Bracket {
 	// regions[r] is semifinal r's players sorted top-to-bottom; index 0 advances to the final.
 	regions = $state<Player[][]>(DEFAULT_REGIONS.map((r) => [...r]));
@@ -76,10 +80,44 @@ class Bracket {
 		this.save();
 	}
 
-	submit() {
+	// Returns null on success, or an error message to show the user.
+	async submit(pin: string): Promise<string | null> {
 		const username = this.username.trim();
-		if (!username) return;
+		if (!username) return 'Enter your BGA username';
+		if (!/^\d{4,6}$/.test(pin)) return 'PIN must be 4–6 digits';
 		this.username = username;
+
+		const payload = JSON.stringify({
+			regions: this.regions.map((r) => [...r]),
+			center: [...this.center]
+		});
+
+		try {
+			const pinHash = await sha256(pin);
+			const { data: existing, error: selErr } = await supabase
+				.from('brackets')
+				.select('id, pin')
+				.ilike('username', username)
+				.maybeSingle();
+			if (selErr) return 'Could not reach the server — try again';
+
+			if (existing) {
+				if (existing.pin !== pinHash) return 'Incorrect PIN for that username';
+				const { error } = await supabase
+					.from('brackets')
+					.update({ data: payload, created_at: new Date().toISOString() })
+					.eq('id', existing.id);
+				if (error) return error.message;
+			} else {
+				const { error } = await supabase
+					.from('brackets')
+					.insert({ username, pin: pinHash, data: payload });
+				if (error) return error.message;
+			}
+		} catch {
+			return 'Could not reach the server — try again';
+		}
+
 		this.submittedAt = Date.now();
 		this.save();
 		const submission: Submission = {
@@ -91,20 +129,7 @@ class Bracket {
 		const all = this.submissions();
 		all[username.toLowerCase()] = submission;
 		localStorage.setItem(SUBMISSIONS_KEY, JSON.stringify(all));
-
-		supabase
-			.from('brackets')
-			.upsert(
-				{
-					username,
-					data: JSON.stringify({ regions: submission.regions, center: submission.center }),
-					user_id: auth.user?.id ?? null
-				},
-				{ onConflict: 'username' }
-			)
-			.then(({ error }) => {
-				if (error) console.warn('Failed to save bracket to Supabase:', error.message);
-			});
+		return null;
 	}
 
 	submissions(): Record<string, Submission> {

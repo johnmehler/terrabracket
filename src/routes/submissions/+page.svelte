@@ -1,14 +1,11 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { auth } from '$lib/auth.svelte';
 	import { bracket, REGION_NAMES, type Submission } from '$lib/bracket.svelte';
 	import { supabase } from '$lib/supabase';
 
 	let subs = $state<Submission[]>([]);
-	let shared = $state(false);
 
 	onMount(async () => {
-		await auth.init();
 		try {
 			const { data, error } = await supabase
 				.from('brackets')
@@ -24,7 +21,6 @@
 						ts: new Date(row.created_at).getTime()
 					};
 				});
-				shared = true;
 				return;
 			}
 		} catch {
@@ -52,10 +48,6 @@
 		<h1 class="sr-only">Submissions</h1>
 		<p class="sub"></p>
 		<nav>
-			{#if auth.user}
-				<span class="who">{auth.user.email}</span>
-				<button class="navbtn" onclick={() => auth.signOut()}>Sign out</button>
-			{/if}
 			<a href="/">← Back to bracket</a>
 		</nav>
 	</header>

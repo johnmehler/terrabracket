@@ -274,6 +274,10 @@ h2 {
 	text-align: center;
 }
 
+.submitbar input.pin {
+	width: 7rem;
+}
+
 .submitbar input:focus {
 	outline: 2px solid #2a6fe0;
 	outline-offset: -1px;
@@ -299,6 +303,18 @@ h2 {
 	margin: 0;
 	font-size: 0.78rem;
 	color: #3e8e52;
+}
+
+.err {
+	margin: 0;
+	font-size: 0.78rem;
+	color: #b3381e;
+}
+
+.pin-hint {
+	margin: 0;
+	font-size: 0.72rem;
+	color: #8a7f5f;
 }
 
 /* ---------- nav ---------- */
@@ -411,107 +427,6 @@ nav a,
 
 .detail li {
 	padding: 0.1rem 0;
-}
-
-/* ---------- login ---------- */
-
-.login-page {
-	align-items: center;
-	justify-content: center;
-}
-
-.login-card {
-	background: #fdf9ec;
-	border: 1px solid #e2d6b4;
-	border-radius: 14px;
-	padding: 1.5rem;
-	width: min(340px, 100%);
-	display: flex;
-	flex-direction: column;
-	gap: 1rem;
-}
-
-.login-logo {
-	margin: 0 auto;
-}
-
-.login-card form {
-	display: flex;
-	flex-direction: column;
-	gap: 0.6rem;
-}
-
-.login-card input {
-	background: #ffffff;
-	border: 1px solid #d8cba4;
-	border-radius: 8px;
-	color: #232a55;
-	padding: 0.6rem 0.8rem;
-	font-size: 0.95rem;
-}
-
-.login-card input:focus {
-	outline: 2px solid #2a6fe0;
-	outline-offset: -1px;
-}
-
-.login-card button {
-	background: #2a3f9e;
-	border: none;
-	border-radius: 8px;
-	color: #fdf9ec;
-	padding: 0.6rem;
-	font-size: 0.95rem;
-	font-weight: 700;
-	cursor: pointer;
-	font-family: inherit;
-}
-
-.login-card button.secondary {
-	background: #fdf9ec;
-	color: #2a3f9e;
-	border: 1px solid #9aa8d8;
-}
-
-.login-card button:disabled {
-	opacity: 0.5;
-	cursor: default;
-}
-
-.login-error {
-	margin: 0;
-	font-size: 0.78rem;
-	color: #b3381e;
-}
-
-.login-notice {
-	margin: 0;
-	font-size: 0.78rem;
-	color: #3e8e52;
-}
-
-.divider {
-	display: flex;
-	align-items: center;
-	gap: 0.6rem;
-	color: #8a7f5f;
-	font-size: 0.75rem;
-}
-
-.divider::before,
-.divider::after {
-	content: '';
-	flex: 1;
-	border-top: 1px solid #e2d6b4;
-}
-
-.login-card .guest {
-	background: none;
-	border: none;
-	color: #2a3f9e;
-	text-decoration: underline;
-	font-weight: 400;
-	font-size: 0.85rem;
 }
 
 /* ---------- small screens ---------- */
