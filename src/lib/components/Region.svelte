@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { bracket, REGION_NAMES } from '$lib/bracket.svelte';
+	import { bracket, REGION_NAMES, type Player } from '$lib/bracket.svelte';
 	import Sortable from './Sortable.svelte';
 
 	let { r, dir }: { r: number; dir: 'left' | 'right' } = $props();
@@ -12,10 +12,11 @@
 		items={bracket.regions[r]}
 		onreorder={(from, to) => bracket.reorderRegion(r, from, to)}
 	>
-		{#snippet row(team: string, i: number)}
+		{#snippet row(player: Player, i: number)}
 			<span class="rank">{i + 1}</span>
-			<span class="name">{team}</span>
+			<span class="name">{player.name}</span>
 			{#if i === 0}<span class="adv">{arrow} Finals</span>{/if}
+			<span class="score">{player.score}</span>
 		{/snippet}
 	</Sortable>
 </section>

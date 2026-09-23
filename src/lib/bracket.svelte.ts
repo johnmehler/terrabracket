@@ -1,11 +1,18 @@
 import { browser } from '$app/environment';
+import { auth } from './auth.svelte';
+import { supabase } from './supabase';
 
-const STORAGE_KEY = 'terrabracket-v3';
+const STORAGE_KEY = 'terrabracket-v4';
 const SUBMISSIONS_KEY = 'terrabracket-submissions';
+
+export interface Player {
+	name: string;
+	score: number;
+}
 
 export interface Submission {
 	username: string;
-	regions: string[][];
+	regions: Player[][];
 	center: number[];
 	ts: number;
 }
@@ -13,11 +20,31 @@ export interface Submission {
 export const REGION_NAMES = ['North', 'East', 'South', 'West'];
 
 // The four preselected players in each semifinal bracket, in seed order.
-export const DEFAULT_REGIONS: string[][] = [
-	['Team A', 'Team B', 'Team C', 'Team D'],
-	['Team E', 'Team F', 'Team G', 'Team H'],
-	['Team I', 'Team J', 'Team K', 'Team L'],
-	['Team M', 'Team N', 'Team O', 'Team P']
+export const DEFAULT_REGIONS: Player[][] = [
+	[
+		{ name: 'MrFickles', score: 18 },
+		{ name: 'Jekyl', score: 15 },
+		{ name: 'ondas', score: 15 },
+		{ name: 'Ryantheman1', score: 15 }
+	],
+	[
+		{ name: 'Aaron W', score: 15 },
+		{ name: 'Mellison', score: 14 },
+		{ name: 'Redrame', score: 13 },
+		{ name: 'Tens0r', score: 13 }
+	],
+	[
+		{ name: 'Zoras', score: 13 },
+		{ name: 'Kezilu', score: 13 },
+		{ name: 'DeepFinesse', score: 13 },
+		{ name: 'Alloran', score: 12.5 }
+	],
+	[
+		{ name: 'Zaarito', score: 12 },
+		{ name: 'Barnawal', score: 12 },
+		{ name: 'MattTheLesser', score: 12 },
+		{ name: 'Voxfini', score: 12 }
+	]
 ];
 
 function move<T>(arr: T[], from: number, to: number): T[] {
@@ -29,13 +56,13 @@ function move<T>(arr: T[], from: number, to: number): T[] {
 
 class Bracket {
 	// regions[r] is semifinal r's players sorted top-to-bottom; index 0 advances to the final.
-	regions = $state<string[][]>(DEFAULT_REGIONS.map((r) => [...r]));
+	regions = $state<Player[][]>(DEFAULT_REGIONS.map((r) => [...r]));
 	// semifinal indices in ranked order for the center bracket; center[0]'s winner is champion.
 	center = $state<number[]>([0, 1, 2, 3]);
 	username = $state('');
 	submittedAt = $state<number | null>(null);
 
-	get champion(): string {
+	get champion(): Player {
 		return this.regions[this.center[0]][0];
 	}
 
@@ -64,6 +91,20 @@ class Bracket {
 		const all = this.submissions();
 		all[username.toLowerCase()] = submission;
 		localStorage.setItem(SUBMISSIONS_KEY, JSON.stringify(all));
+
+		supabase
+			.from('brackets')
+			.upsert(
+				{
+					username,
+					data: JSON.stringify({ regions: submission.regions, center: submission.center }),
+					user_id: auth.user?.id ?? null
+				},
+				{ onConflict: 'username' }
+			)
+			.then(({ error }) => {
+				if (error) console.warn('Failed to save bracket to Supabase:', error.message);
+			});
 	}
 
 	submissions(): Record<string, Submission> {

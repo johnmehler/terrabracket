@@ -8,13 +8,15 @@
 	<p class="hint">Semifinal winners — drag to rank them</p>
 	<Sortable items={bracket.center} onreorder={(from, to) => bracket.reorderCenter(from, to)}>
 		{#snippet row(src: number, i: number)}
+			{@const p = bracket.regions[src][0]}
 			<span class="rank">{i + 1}</span>
-			<span class="name">{bracket.regions[src][0]}</span>
+			<span class="name">{p.name}</span>
 			<span class="src">{REGION_NAMES[src]}</span>
+			<span class="score">{p.score}</span>
 		{/snippet}
 	</Sortable>
 	<div class="champ">
 		<span class="label">Champion</span>
-		<strong>{bracket.champion}</strong>
+		<strong>{bracket.champion.name}</strong>
 	</div>
 </section>
