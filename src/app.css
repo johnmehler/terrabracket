@@ -446,11 +446,45 @@ nav a {
 
 /* ---------- small screens ---------- */
 
-.mobile-nav {
+.mobile-nav,
+.mobile-submissions {
 	display: none;
 }
 
 @media (max-width: 900px) {
+	header nav {
+		display: none;
+	}
+
+	.mobile-submissions {
+		display: flex;
+		justify-content: center;
+		padding-bottom: 0.5rem;
+	}
+
+	.submitbar form {
+		width: 100%;
+	}
+
+	.submitbar input {
+		flex: 1;
+		width: auto;
+		min-width: 0;
+		font-size: 1rem;
+		padding: 0.55rem 0.6rem;
+	}
+
+	.submitbar input.pin {
+		flex: none;
+		width: 4.5rem;
+	}
+
+	.submitbar button {
+		flex: none;
+		font-size: 1rem;
+		padding: 0.55rem 0.9rem;
+	}
+
 	.board {
 		grid-template-columns: 1fr;
 		grid-template-rows: none;

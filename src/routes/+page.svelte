@@ -98,4 +98,8 @@
 		<Region r={2} dir="right" hide={mobile && active !== 2} />
 		<Region r={3} dir="left" hide={mobile && active !== 3} />
 	</main>
+
+	<nav class="mobile-submissions">
+		<a href="/submissions">Submissions</a>
+	</nav>
 </div>
